@@ -9,12 +9,12 @@ SCREEN_HEIGHT :: 800
 
 // level bounds
 // ensure always evenly divisble by TILE_SIZE
-LEVEL_WIDTH :: 1200
-LEVEL_HEIGHT :: 800
-LEVEL_TWO_WIDTH :: 720
-LEVEL_TWO_HEIGHT :: 640
-LEVEL_THREE_WIDTH :: 1200
-LEVEL_THREE_HEIGHT :: 2000
+LEVEL_WIDTH :: 600
+LEVEL_HEIGHT :: 400
+LEVEL_TWO_WIDTH :: 360
+LEVEL_TWO_HEIGHT :: 320
+LEVEL_THREE_WIDTH :: 600
+LEVEL_THREE_HEIGHT :: 1000
 
 // tiles
 TILE_SIZE :: 16
@@ -48,29 +48,29 @@ init_levels :: proc() {
 	current_bounds = &lv_one.levelBounds
 
 	lv_one.levelBounds = {
-		x      = (SCREEN_HEIGHT - LEVEL_WIDTH) / 2,
-		y      = (SCREEN_HEIGHT - LEVEL_HEIGHT) / 2,
+		x      = 0,
+		y      = 0,
 		width  = LEVEL_WIDTH,
 		height = LEVEL_HEIGHT,
 	}
 
 	lv_two.levelBounds = {
-		x      = (SCREEN_HEIGHT - LEVEL_TWO_WIDTH) / 2,
-		y      = (SCREEN_HEIGHT - LEVEL_TWO_HEIGHT) / 2,
+		x      = 0,
+		y      = 0,
 		width  = LEVEL_TWO_WIDTH,
 		height = LEVEL_TWO_HEIGHT,
 	}
 
 	lv_three.levelBounds = {
-		x      = (SCREEN_HEIGHT - LEVEL_TWO_WIDTH) / 2,
-		y      = (SCREEN_HEIGHT - LEVEL_TWO_HEIGHT) / 2,
+		x      = 0,
+		y      = 0,
 		width  = LEVEL_THREE_WIDTH,
 		height = LEVEL_THREE_HEIGHT,
 	}
 }
 
 init_player :: proc() {
-	p.bounds = {300, 300, 60, 100}
+	p.bounds = {300, 300, 30, 50}
 	p.texture = {160, 100, 100, 255}
 	p.speed = 500.0
 }
@@ -175,7 +175,10 @@ main :: proc() {
 		rl.ClearBackground(rl.BLACK)
 
 		rl.BeginMode2D(camera)
+
 		rl.DrawRectangleLinesEx(current_bounds^, 2, rl.WHITE)
+		draw_tilemap()
+
 		rl.DrawRectangleRec(p.bounds, p.texture)
 		rl.EndMode2D()
 	}
