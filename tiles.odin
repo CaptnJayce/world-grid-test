@@ -13,6 +13,7 @@ Tile :: struct {
 	id:      u16,
 	variant: u8,
 	flags:   bit_set[TileFlags;u8],
+	rect:    rl.Rectangle,
 }
 
 TileMap :: struct {
@@ -36,34 +37,54 @@ init_tilemap :: proc() {
 
 	for row in 0 ..< tm.height {
 		tm.tiles[row] = make([]Tile, tm.width)
+
 		for col in 0 ..< tm.width {
-			tm.tiles[row][col] = Tile {
-				id      = 1,
-				variant = 0,
-				flags   = {.Stone, .Collidable},
+			tile_x := i32(col * TILE_SIZE)
+			tile_y := i32(row * TILE_SIZE)
+
+			if row > tm.height / 2 {
+				tm.tiles[row][col] = Tile {
+					id = 2,
+					variant = 0,
+					flags = {.Stone, .Collidable},
+					rect = {
+						x = f32(tile_x),
+						y = f32(tile_y),
+						width = TILE_SIZE,
+						height = TILE_SIZE,
+					},
+				}
+			} else {
+				tm.tiles[row][col] = Tile {
+					id      = 1,
+					variant = 0,
+					flags   = {.Dirt},
+				}
 			}
+
 		}
 	}
 }
 
+collision_rect := rl.Rectangle{}
 current_x: i32
 current_y: i32
 draw_tilemap :: proc() {
 	for row in 0 ..< tm.height {
 		for col in 0 ..< tm.width {
-			x := i32(col * TILE_SIZE)
-			y := i32(row * TILE_SIZE)
+			tile_x := i32(col * TILE_SIZE)
+			tile_y := i32(row * TILE_SIZE)
 
 			tile := tm.tiles[row][col]
 
+			if .Dirt in tile.flags {
+				rl.DrawRectangle(tile_x, tile_y, TILE_SIZE, TILE_SIZE, rl.BROWN)
+			}
 			if .Stone in tile.flags {
-				rl.DrawRectangle(x, y, TILE_SIZE, TILE_SIZE, rl.GRAY)
-				fmt.println(x, y)
-			} else if .Dirt in tile.flags {
-				rl.DrawRectangle(x, y, TILE_SIZE, TILE_SIZE, rl.BROWN)
+				rl.DrawRectangle(tile_x, tile_y, TILE_SIZE, TILE_SIZE, rl.GRAY)
 			}
 
-			rl.DrawRectangleLines(x, y, TILE_SIZE, TILE_SIZE, rl.WHITE)
+			rl.DrawRectangleLines(tile_x, tile_y, TILE_SIZE, TILE_SIZE, rl.WHITE)
 		}
 	}
 }

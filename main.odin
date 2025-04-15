@@ -9,12 +9,12 @@ SCREEN_HEIGHT :: 800
 
 // level bounds
 // ensure always evenly divisble by TILE_SIZE
-LEVEL_WIDTH :: 600
+LEVEL_WIDTH :: 592
 LEVEL_HEIGHT :: 400
-LEVEL_TWO_WIDTH :: 360
+LEVEL_TWO_WIDTH :: 352
 LEVEL_TWO_HEIGHT :: 320
-LEVEL_THREE_WIDTH :: 600
-LEVEL_THREE_HEIGHT :: 1000
+LEVEL_THREE_WIDTH :: 592
+LEVEL_THREE_HEIGHT :: 992
 
 // tiles
 TILE_SIZE :: 16
@@ -70,9 +70,9 @@ init_levels :: proc() {
 }
 
 init_player :: proc() {
-	p.bounds = {300, 300, 30, 50}
+	p.bounds = {0, 0, 30, 50}
 	p.texture = {160, 100, 100, 255}
-	p.speed = 500.0
+	p.speed = 300.0
 }
 
 camera: rl.Camera2D
@@ -81,7 +81,7 @@ init_camera :: proc() {
 		target   = {p.bounds.x + p.bounds.width / 2, p.bounds.y + p.bounds.height / 2},
 		offset   = {SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2},
 		rotation = 0,
-		zoom     = 1.0,
+		zoom     = 2.0,
 	}
 }
 
@@ -90,20 +90,20 @@ level_handler :: proc() {
 
 	if rl.IsKeyPressed(.ONE) {
 		current_level = 1
-		p.bounds.x = 200
-		p.bounds.y = 200
+		p.bounds.x = 50
+		p.bounds.y = 50
 		level_changed = true
 	}
 	if rl.IsKeyPressed(.TWO) {
 		current_level = 2
-		p.bounds.x = 200
-		p.bounds.y = 200
+		p.bounds.x = 50
+		p.bounds.y = 50
 		level_changed = true
 	}
 	if rl.IsKeyPressed(.THREE) {
 		current_level = 3
-		p.bounds.x = 200
-		p.bounds.y = 200
+		p.bounds.x = 50
+		p.bounds.y = 50
 		level_changed = true
 	}
 
@@ -122,6 +122,7 @@ level_handler :: proc() {
 	}
 }
 
+player_prev_pos := rl.Vector2{}
 player_handler :: proc() {
 	deltaTime := rl.GetFrameTime()
 	moveDir := rl.Vector2{}
@@ -155,6 +156,19 @@ player_handler :: proc() {
 	}
 }
 
+player_collision :: proc() {
+	for row in 0 ..< tm.height {
+		for col in 0 ..< tm.width {
+			tile := tm.tiles[row][col]
+
+			if rl.CheckCollisionRecs(p.bounds, tile.rect) {
+				p.bounds.x = player_prev_pos.x
+				p.bounds.y = player_prev_pos.y
+			}
+		}
+	}
+}
+
 main :: proc() {
 	rl.InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "World Grid Test")
 	defer rl.CloseWindow()
@@ -164,10 +178,13 @@ main :: proc() {
 	init_player()
 	init_levels()
 	init_camera()
+	init_tilemap()
 
 	for !rl.WindowShouldClose() {
 		level_handler()
+		player_prev_pos = {p.bounds.x, p.bounds.y}
 		player_handler()
+		player_collision()
 
 		rl.BeginDrawing()
 		defer rl.EndDrawing()
