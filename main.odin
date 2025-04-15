@@ -1,17 +1,23 @@
 package main
 
+import "core:fmt"
 import rl "vendor:raylib"
 
+// screen
 SCREEN_WIDTH :: 1200
 SCREEN_HEIGHT :: 800
 
 // level bounds
-LEVEL_WIDTH :: 600
-LEVEL_HEIGHT :: 600
-LEVEL_TWO_WIDTH :: 800
-LEVEL_TWO_HEIGHT :: 1000
-LEVEL_THREE_WIDTH :: 1800
+// ensure always evenly divisble by TILE_SIZE
+LEVEL_WIDTH :: 1200
+LEVEL_HEIGHT :: 800
+LEVEL_TWO_WIDTH :: 720
+LEVEL_TWO_HEIGHT :: 640
+LEVEL_THREE_WIDTH :: 1200
 LEVEL_THREE_HEIGHT :: 2000
+
+// tiles
+TILE_SIZE :: 16
 
 Player :: struct {
 	bounds:  rl.Rectangle,
@@ -72,28 +78,33 @@ init_player :: proc() {
 camera: rl.Camera2D
 init_camera :: proc() {
 	camera = {
-		target   = {p.bounds.x + p.bounds.width / 2, p.bounds.y + p.bounds.height / 2}, // Center on player
-		offset   = {SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2}, // Camera's center on screen
+		target   = {p.bounds.x + p.bounds.width / 2, p.bounds.y + p.bounds.height / 2},
+		offset   = {SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2},
 		rotation = 0,
 		zoom     = 1.0,
 	}
 }
 
 level_handler :: proc() {
+	level_changed := false
+
 	if rl.IsKeyPressed(.ONE) {
 		current_level = 1
 		p.bounds.x = 200
 		p.bounds.y = 200
+		level_changed = true
 	}
 	if rl.IsKeyPressed(.TWO) {
 		current_level = 2
 		p.bounds.x = 200
 		p.bounds.y = 200
+		level_changed = true
 	}
 	if rl.IsKeyPressed(.THREE) {
 		current_level = 3
 		p.bounds.x = 200
 		p.bounds.y = 200
+		level_changed = true
 	}
 
 	switch current_level {
@@ -103,6 +114,11 @@ level_handler :: proc() {
 		current_bounds = &lv_two.levelBounds
 	case 3:
 		current_bounds = &lv_three.levelBounds
+	}
+
+	if level_changed == true {
+		init_tilemap()
+		level_changed = false
 	}
 }
 
