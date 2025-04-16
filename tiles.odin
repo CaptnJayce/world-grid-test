@@ -3,6 +3,8 @@ package main
 import "core:fmt"
 import rl "vendor:raylib"
 
+TILE_SIZE :: 16
+
 TileFlags :: enum {
 	Collidable = 0,
 	Stone      = 1,
@@ -69,6 +71,8 @@ init_tilemap :: proc() {
 collision_rect := rl.Rectangle{}
 current_x: i32
 current_y: i32
+
+// handles drawing and editing
 draw_tilemap :: proc() {
 	for row in 0 ..< tm.height {
 		for col in 0 ..< tm.width {
@@ -85,6 +89,43 @@ draw_tilemap :: proc() {
 			}
 
 			rl.DrawRectangleLines(tile_x, tile_y, TILE_SIZE, TILE_SIZE, rl.WHITE)
+		}
+	}
+
+	mouse_grid_x := int(mouse_rect.x) / TILE_SIZE
+	mouse_grid_y := int(mouse_rect.y) / TILE_SIZE
+
+	if mouse_grid_x >= 0 &&
+	   mouse_grid_x < tm.width &&
+	   mouse_grid_y >= 0 &&
+	   mouse_grid_y < tm.height {
+
+		highlight_x := i32(mouse_grid_x * TILE_SIZE)
+		highlight_y := i32(mouse_grid_y * TILE_SIZE)
+
+		rl.DrawRectangleRec(
+			rl.Rectangle {
+				x = f32(highlight_x),
+				y = f32(highlight_y),
+				width = TILE_SIZE,
+				height = TILE_SIZE,
+			},
+			rl.ColorAlpha(rl.WHITE, 0.5),
+		)
+	}
+}
+
+edit_tilemap :: proc() {
+	for row in 0 ..< tm.height {
+		for col in 0 ..< tm.width {
+			tile_x := i32(col * TILE_SIZE)
+			tile_y := i32(row * TILE_SIZE)
+
+			tile := tm.tiles[row][col]
+
+			if rl.IsMouseButtonPressed(.LEFT) {
+				tm.tiles[row][col].flags = {.Dirt}
+			}
 		}
 	}
 }
