@@ -1,21 +1,13 @@
 package main
 
-import "core:fmt"
 import rl "vendor:raylib"
-
-SCREEN_WIDTH :: 1200
-SCREEN_HEIGHT :: 800
 
 main :: proc() {
 	rl.InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "World Grid Test")
 	defer rl.CloseWindow()
-
 	rl.SetTargetFPS(120)
 
-	init_player()
-	init_levels()
-	init_camera()
-	load_tiles("tiles.bin")
+	init_all()
 
 	for !rl.WindowShouldClose() {
 		level_handler()
@@ -33,7 +25,6 @@ main :: proc() {
 		defer rl.EndDrawing()
 
 		rl.ClearBackground(rl.BLACK)
-
 		rl.BeginMode2D(camera)
 
 		draw_all()

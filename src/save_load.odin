@@ -3,6 +3,8 @@ package main
 import "core:mem"
 import "core:os"
 
+fp := "tiles.bin"
+
 save_tiles :: proc(filename: string) -> bool {
 	count: u32 = 0
 	for row in 0 ..< tm.height {

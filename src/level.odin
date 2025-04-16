@@ -2,27 +2,17 @@ package main
 
 import rl "vendor:raylib"
 
-// ensure always evenly divisble by TILE_SIZE
-LEVEL_WIDTH :: 592
-LEVEL_HEIGHT :: 400
-LEVEL_TWO_WIDTH :: 352
-LEVEL_TWO_HEIGHT :: 320
-LEVEL_THREE_WIDTH :: 592
-LEVEL_THREE_HEIGHT :: 992
-
 LevelOne :: struct {
 	levelBounds: rl.Rectangle,
 }
-lv_one: LevelOne
-
 LevelTwo :: struct {
 	levelBounds: rl.Rectangle,
 }
-lv_two: LevelTwo
-
 LevelThree :: struct {
 	levelBounds: rl.Rectangle,
 }
+lv_one: LevelOne
+lv_two: LevelTwo
 lv_three: LevelThree
 
 current_level: int
@@ -85,7 +75,7 @@ level_handler :: proc() {
 	}
 
 	if level_changed == true {
-		load_tiles("tiles.bin")
+		load_tiles(fp)
 		level_changed = false
 	}
 }

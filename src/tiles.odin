@@ -2,26 +2,21 @@ package main
 
 import rl "vendor:raylib"
 
-TILE_SIZE :: 16
-
 TileFlags :: enum {
 	Collidable = 0,
 	Stone      = 1,
 	Dirt       = 2,
 }
-
 Tile :: struct {
 	flags:    bit_set[TileFlags;u8],
 	rect:     rl.Rectangle,
 	modified: bool,
 	row, col: int,
 }
-
 TileMap :: struct {
 	width, height: int,
 	tiles:         [][]Tile,
 }
-
 tm: TileMap
 
 tile_grid_columns: f32
