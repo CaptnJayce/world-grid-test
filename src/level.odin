@@ -2,7 +2,6 @@ package main
 
 import rl "vendor:raylib"
 
-// level bounds
 // ensure always evenly divisble by TILE_SIZE
 LEVEL_WIDTH :: 592
 LEVEL_HEIGHT :: 400

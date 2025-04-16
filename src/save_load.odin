@@ -2,8 +2,6 @@ package main
 
 import "core:mem"
 import "core:os"
-import "core:slice"
-import rl "vendor:raylib"
 
 save_tiles :: proc(filename: string) -> bool {
 	count: u32 = 0
