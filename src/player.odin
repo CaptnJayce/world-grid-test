@@ -9,14 +9,16 @@ Player :: struct {
 	speed:   f32,
 }
 p: Player
+camera: rl.Camera2D
+mouse_rect: rl.Rectangle = {}
+player_prev_pos: rl.Vector2 = {}
 
 init_player :: proc() {
-	p.bounds = {0, 0, 30, 50}
+	p.bounds = {0, 0, 25, 40}
 	p.texture = {160, 100, 100, 255}
 	p.speed = 300.0
 }
 
-camera: rl.Camera2D
 init_camera :: proc() {
 	camera = {
 		target   = {p.bounds.x + p.bounds.width / 2, p.bounds.y + p.bounds.height / 2},
@@ -26,7 +28,6 @@ init_camera :: proc() {
 	}
 }
 
-mouse_rect: rl.Rectangle = {}
 mouse_handler :: proc() {
 	mp := rl.GetScreenToWorld2D(rl.GetMousePosition(), camera)
 
@@ -38,7 +39,6 @@ mouse_handler :: proc() {
 	}
 }
 
-player_prev_pos := rl.Vector2{}
 player_handler :: proc() {
 	deltaTime := rl.GetFrameTime()
 	moveDir := rl.Vector2{}

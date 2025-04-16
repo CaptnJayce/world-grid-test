@@ -12,16 +12,15 @@ TileFlags :: enum {
 }
 
 Tile :: struct {
-	id:      u16,
-	variant: u8,
-	flags:   bit_set[TileFlags;u8],
-	rect:    rl.Rectangle,
+	flags:    bit_set[TileFlags;u8],
+	rect:     rl.Rectangle,
+	modified: bool,
+	row, col: int,
 }
 
 TileMap :: struct {
 	width, height: int,
 	tiles:         [][]Tile,
-	texture:       rl.Texture2D,
 }
 
 tm: TileMap
@@ -44,10 +43,9 @@ init_tilemap :: proc() {
 			tile_x := i32(col * TILE_SIZE)
 			tile_y := i32(row * TILE_SIZE)
 
+			// will used more advanced algo in Witch Way
 			if row > tm.height / 2 {
 				tm.tiles[row][col] = Tile {
-					id = 2,
-					variant = 0,
 					flags = {.Stone, .Collidable},
 					rect = {
 						x = f32(tile_x),
@@ -58,12 +56,9 @@ init_tilemap :: proc() {
 				}
 			} else {
 				tm.tiles[row][col] = Tile {
-					id      = 1,
-					variant = 0,
-					flags   = {.Dirt},
+					flags = {.Dirt},
 				}
 			}
-
 		}
 	}
 }
@@ -88,7 +83,7 @@ draw_tilemap :: proc() {
 				rl.DrawRectangle(tile_x, tile_y, TILE_SIZE, TILE_SIZE, rl.GRAY)
 			}
 
-			rl.DrawRectangleLines(tile_x, tile_y, TILE_SIZE, TILE_SIZE, rl.WHITE)
+			// rl.DrawRectangleLines(tile_x, tile_y, TILE_SIZE, TILE_SIZE, rl.WHITE)
 		}
 	}
 
@@ -112,20 +107,14 @@ draw_tilemap :: proc() {
 			},
 			rl.ColorAlpha(rl.WHITE, 0.5),
 		)
+
+		edit_tilemap(mouse_grid_y, mouse_grid_x)
 	}
 }
 
-edit_tilemap :: proc() {
-	for row in 0 ..< tm.height {
-		for col in 0 ..< tm.width {
-			tile_x := i32(col * TILE_SIZE)
-			tile_y := i32(row * TILE_SIZE)
-
-			tile := tm.tiles[row][col]
-
-			if rl.IsMouseButtonPressed(.LEFT) {
-				tm.tiles[row][col].flags = {.Dirt}
-			}
-		}
+edit_tilemap :: proc(row: int, col: int) {
+	if rl.IsMouseButtonPressed(.LEFT) && .Stone in tm.tiles[row][col].flags {
+		tm.tiles[row][col].flags = {.Dirt}
+		tm.tiles[row][col].modified = true
 	}
 }

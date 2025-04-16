@@ -15,7 +15,7 @@ main :: proc() {
 	init_player()
 	init_levels()
 	init_camera()
-	init_tilemap()
+	load_tiles("tiles.bin")
 
 	for !rl.WindowShouldClose() {
 		level_handler()
@@ -24,7 +24,10 @@ main :: proc() {
 		player_handler()
 		mouse_handler()
 		player_collision()
-		edit_tilemap()
+
+		if rl.IsKeyPressed(.O) {
+			save_tiles("tiles.bin")
+		}
 
 		rl.BeginDrawing()
 		defer rl.EndDrawing()
@@ -33,10 +36,8 @@ main :: proc() {
 
 		rl.BeginMode2D(camera)
 
-		rl.DrawRectangleLinesEx(current_bounds^, 2, rl.WHITE) // bounds
-		draw_tilemap() // tilemap
-		rl.DrawRectangleRec(p.bounds, p.texture) // player
-		rl.DrawRectangleRec(mouse_rect, rl.WHITE) // mouse
+		draw_all()
+
 		rl.EndMode2D()
 	}
 }

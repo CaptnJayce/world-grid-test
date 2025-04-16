@@ -86,7 +86,7 @@ level_handler :: proc() {
 	}
 
 	if level_changed == true {
-		init_tilemap()
+		load_tiles("tiles.bin")
 		level_changed = false
 	}
 }
