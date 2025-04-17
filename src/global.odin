@@ -18,5 +18,6 @@ init_all :: proc() {
 	init_player()
 	init_levels()
 	init_camera()
-	load_tiles(fp)
+	init_tilemap(current_level)
+	load_tiles(fp, current_level)
 }

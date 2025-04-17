@@ -68,14 +68,18 @@ level_handler :: proc() {
 	switch current_level {
 	case 1:
 		current_bounds = &lv_one.levelBounds
+		fp = "level1_tiles.bin"
 	case 2:
 		current_bounds = &lv_two.levelBounds
+		fp = "level2_tiles.bin"
 	case 3:
 		current_bounds = &lv_three.levelBounds
+		fp = "level3_tiles.bin"
 	}
 
 	if level_changed == true {
-		load_tiles(fp)
+		init_tilemap(current_level)
+		load_tiles(fp, current_level)
 		level_changed = false
 	}
 }

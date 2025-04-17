@@ -12,6 +12,7 @@ Tile :: struct {
 	rect:     rl.Rectangle,
 	modified: bool,
 	row, col: int,
+	id:       int,
 }
 TileMap :: struct {
 	width, height: int,
@@ -24,7 +25,7 @@ tile_grid_rows: f32
 total_tiles: f32
 total_length: f32
 total_height: f32
-init_tilemap :: proc() {
+init_tilemap :: proc(level_id: int) {
 	tm.width = int(current_bounds.width / TILE_SIZE)
 	tm.height = int(current_bounds.height / TILE_SIZE)
 
@@ -47,10 +48,12 @@ init_tilemap :: proc() {
 						width = TILE_SIZE,
 						height = TILE_SIZE,
 					},
+					id = level_id,
 				}
 			} else {
 				tm.tiles[row][col] = Tile {
 					flags = {.Dirt},
+					id    = level_id,
 				}
 			}
 		}

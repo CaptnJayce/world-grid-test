@@ -18,7 +18,15 @@ main :: proc() {
 		player_collision()
 
 		if rl.IsKeyPressed(.O) {
-			save_tiles("tiles.bin")
+			if current_level == 1 {
+				save_tiles("level1_tiles.bin", current_level)
+			}
+			if current_level == 2 {
+				save_tiles("level2_tiles.bin", current_level)
+			}
+			if current_level == 3 {
+				save_tiles("level3_tiles.bin", current_level)
+			}
 		}
 
 		rl.BeginDrawing()
