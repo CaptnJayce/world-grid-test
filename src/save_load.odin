@@ -3,14 +3,14 @@ package main
 import "core:mem"
 import "core:os"
 
-fp := "level1_tiles.bin"
+fp := "world_tiles.bin"
 
-save_tiles :: proc(filename: string, current_level_id: int) -> bool {
+save_tiles :: proc() -> bool {
 	count: u32 = 0
 	for row in 0 ..< tm.height {
 		for col in 0 ..< tm.width {
 			tile := &tm.tiles[row][col]
-			if tile.modified && tile.id == current_level_id {
+			if tile.modified {
 				count += 1
 			}
 		}
@@ -33,7 +33,7 @@ save_tiles :: proc(filename: string, current_level_id: int) -> bool {
 	for row in 0 ..< tm.height {
 		for col in 0 ..< tm.width {
 			tile := &tm.tiles[row][col]
-			if !tile.modified || tile.id != current_level_id {
+			if !tile.modified {
 				continue
 			}
 
@@ -57,12 +57,12 @@ save_tiles :: proc(filename: string, current_level_id: int) -> bool {
 		}
 	}
 
-	os.write_entire_file(filename, buffer)
+	os.write_entire_file(fp, buffer)
 	return true
 }
 
-load_tiles :: proc(filename: string, current_level_id: int) -> bool {
-	data, ok := os.read_entire_file(filename)
+load_tiles :: proc() -> bool {
+	data, ok := os.read_entire_file(fp)
 	if !ok {
 		return false
 	}
@@ -91,11 +91,6 @@ load_tiles :: proc(filename: string, current_level_id: int) -> bool {
 		mem.copy(&level_id, &data[offset], size_of(u32))
 		offset += size_of(u32)
 
-		if int(level_id) != current_level_id {
-			offset += size_of(u32) * 2 + size_of(u8)
-			continue
-		}
-
 		row: u32
 		mem.copy(&row, &data[offset], size_of(u32))
 		offset += size_of(u32)
@@ -110,7 +105,6 @@ load_tiles :: proc(filename: string, current_level_id: int) -> bool {
 
 		if int(row) < tm.height && int(col) < tm.width {
 			tm.tiles[row][col].flags = transmute(bit_set[TileFlags;u8])flags
-			tm.tiles[row][col].id = current_level_id
 			tm.tiles[row][col].modified = true
 		}
 	}
